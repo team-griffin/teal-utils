@@ -48,7 +48,7 @@ o.get(null, '0:0|c:1'). // -> { default: true, analytics: false }
     [id: string]: boolean,
   },
   consent: string,
-) => Fluture<void>;
+) => string;
 ```
 Sets the consent flag for the given categories. Any categories not passed into this method will be preserved.
 
@@ -85,7 +85,7 @@ This means you can reference the preferences by their aliases rather than their 
 ```js
 (
   categories?: Array<string>,
-) => Either<{
+) => Maybe<{
   [id: string]: boolean,
 }>
 ```
@@ -105,7 +105,7 @@ o.get().either(console.error, console.log) // -> { default: true, analytics: fal
   categories: {
     [id: string]: boolean,
   },
-) => Fluture<void>;
+) => Maybe<string>;
 ```
 Sets the consent flag for the given categories. Any categories not passed into this method will be preserved.
 
