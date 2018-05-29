@@ -22,6 +22,7 @@ const o = consent({
 ```
 This means you can reference the preferences by their aliases rather than their ids.
 
+
 ### get
 ```js
 (
@@ -58,6 +59,26 @@ o.set({
 }, '0:1|c:0')
 ```
 
+### getByOrder
+```js
+(
+  categories: Array<string>,
+  consent: string,
+) => {
+  [category: string]: {
+    id: string,
+    value: boolean,
+  },
+}
+```
+If you don't know the ids of your categories, but you know the order they will be in, you can use this method to extract the ids and flags based purely on their order.
+
+```js
+const o = consent();
+
+o.getByOrder([ 'default', 'analytics' ], '0:1|c:0') // { default: { id: '0', value: false }, analytics: { id: 'c', value: true }}
+```
+
 ## Cookie Consent
 ```js
 (
@@ -91,12 +112,12 @@ This means you can reference the preferences by their aliases rather than their 
 ```
 Fetches the categories, with a boolean value to indicate whether the user has given consent for that option.
 ```js
-o.get([ 'default' ]).either(console.error, console.log) // -> { default: true }
+o.get([ 'default' ]).getOrElse() // -> { default: true }
 ```
 
 The categories list is optional, if you call `get` with no arguments, it will return *all* categories:
 ```js
-o.get().either(console.error, console.log) // -> { default: true, analytics: false }
+o.get().getOrElse() // -> { default: true, analytics: false }
 ```
 
 ### set
@@ -112,5 +133,100 @@ Sets the consent flag for the given categories. Any categories not passed into t
 ```js
 o.set({
   default: false,
-}).either(console.error, console.log)
+}).getOrElse()
+```
+
+### getByOrder
+```js
+(
+  categories: Array<string>,
+) => Maybe<{
+  [category: string]: {
+    id: string,
+    value: boolean,
+  },
+}>
+```
+If you don't know the ids of your categories, but you know the order they will be in, you can use this method to extract the ids and flags based purely on their order.
+
+```js
+const o = consent();
+
+o.getByOrder([ 'default', 'analytics' ]).getOrElse() // { default: { id: '0', value: false }, analytics: { id: 'c', value: true }}
+```
+
+## Identity Consent
+```js
+(
+  mappings: {
+    [id: string]: string,
+  },
+  consent: string,
+) => Object
+```
+```js
+import { identityConsent } from '@team-griffin/uteals';
+```
+This variation is very similar to the standard `consent` except that you can provide the consent string at instantiation time.
+
+To create an instance, call it with a mapping of category ids to aliases:
+```js
+const o = identityConsent({
+  0: 'default',
+  c11: 'analytics',
+}, '0:1|c:0');
+```
+This means you can reference the preferences by their aliases rather than their ids.
+
+### get
+```js
+(
+  categories?: Array<string>,
+) => {
+  [id: string]: boolean,
+}
+```
+Fetches the categories, with a boolean value to indicate whether the user has given consent for that option.
+```js
+o.get([ 'default' ]) // -> { default: true }
+```
+
+The categories list is optional, if you call `get` with no arguments, it will return *all* categories:
+```js
+o.get() // -> { default: true, analytics: false }
+```
+
+### set
+```js
+(
+  categories: {
+    [id: string]: boolean,
+  },
+) => string;
+```
+Sets the consent flag for the given categories. Any categories not passed into this method will be preserved.
+
+```js
+o.set({
+  default: false,
+}).getOrElse()
+```
+
+### getByOrder
+```js
+(
+  categories: Array<string>,
+) => {
+  [category: string]: {
+    id: string,
+    value: boolean,
+  },
+}
+```
+If you don't know the ids of your categories, but you know the order they will be in, you can use this method to extract the ids and flags based purely on their order.
+
+```js
+const o = consent();
+
+o.getByOrder([ 'default', 'analytics' ]) // { default: { id: '0', value: false }, analytics: { id: 'c', value: true }}
 ```
