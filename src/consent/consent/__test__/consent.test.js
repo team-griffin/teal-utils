@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { identity } from 'ramda';
 
-import consent from '../consent';
+import consent from '../';
 
 describe('consent', function(){
   beforeEach(function(){
@@ -16,11 +16,19 @@ describe('consent', function(){
     this.consent = consent(mappings);
   });
 
+  it('can be instantiated with no mappings', function () {
+    expect(() => {
+      consent();
+    }).not.to.throw;
+  });
   it('has a get method', function(){
     expect(typeof this.consent.get).to.equal('function');
   });
   it('has a set method', function () {
     expect(typeof this.consent.set).to.equal('function');
+  });
+  it('has a getByOrder method', function () {
+    expect(typeof this.consent.getByOrder).to.equal('function');
   });
 
   describe('get', function(){
@@ -92,4 +100,37 @@ describe('consent', function(){
       expect(actual).to.equal(expected);
     });
   });
+
+  describe('getByOrder', function(){
+    it('returns an object', function () {
+      const { consent, example } = this;
+      const result = consent.getByOrder([ 'default' ], example);
+      expect(result).to.be.instanceof(Object);
+    });
+    it('contains the provided keys', function () {
+      const { consent, example } = this;
+      const result = consent.getByOrder([ 'default', 'analytics' ], example);
+      expect(result.default).to.be.instanceof(Object);
+      expect(result.analytics).to.be.instanceof(Object);
+    });
+    it('contains the id and value for each category', function () {
+      const { consent, example } = this;
+
+      const result = consent.getByOrder([ 'default', 'advertising', 'analytics' ], example);
+
+      expect(result.default.id).to.equal('0');
+      expect(result.default.value).to.equal(false);
+      expect(result.advertising.id).to.equal('c');
+      expect(result.advertising.value).to.equal(true);
+      expect(result.analytics.id).to.equal('c9');
+      expect(result.analytics.value).to.equal(false);
+    });
+    it('returns void for unknown/missing categories', function () {
+      const { consent, example } = this;
+      const result = consent.getByOrder([ 'default', 'support', 'analytics', 'advertising', 'extra' ], example);
+
+      expect(result.extra).to.equal(void 0);
+    });
+  });
+
 });
