@@ -5,7 +5,7 @@ import consent from './consent';
 import identityConsent from './identity';
 import createCookie from './cookie';
 
-const cookieConsent = createCookie(cookies);
+const cookieConsent = createCookie(cookies, window.location.hostname);
 
 export {
   consent,

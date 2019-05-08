@@ -1,6 +1,7 @@
 // @flow
 import typeof Cookies from 'browser-cookies';
 
+import tlds from 'tld-list';
 import Maybe from 'folktale/maybe';
 import * as r from 'ramda';
 
@@ -37,8 +38,25 @@ type CookieConsent = (
   }>,
 };
 
+const getDomain = (hostname: string) => {
+  const tld = r.pipe(
+    r.map((tld) => `.${tld}`),
+    r.find(r.contains(r.__, hostname)),
+  )(tlds);
+
+  const i = r.indexOf(tld, hostname);
+
+  return r.pipe(
+    r.slice(0, i),
+    r.split('.'),
+    r.last,
+    (url) => `${url}${tld}`,
+  )(hostname);
+};
+
 const cookieConsent = (
   cookies: Cookies,
+  hostname: string,
 ): CookieConsent => (
   mappings = {},
   cookieOptions,
@@ -47,7 +65,12 @@ const cookieConsent = (
 
   const getFromCookie = () => Maybe.fromNullable(cookies.get(CONSENT_COOKIE));
   const writeToCookie = (value) => {
-    cookies.set(CONSENT_COOKIE, value, cookieOptions);
+    const domain = getDomain(hostname);
+    const opts = Object.assign(
+      { domain },
+      cookieOptions,
+    );
+    cookies.set(CONSENT_COOKIE, value, opts);
   };
 
   const get = (categories) => r.pipe(

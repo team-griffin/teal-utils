@@ -1,6 +1,6 @@
 {
   "name": "@team-griffin/uteals",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Utilities for Tealium",
   "main": "dist/cjs/uteals.js",
   "module": "dist/es/uteals.js",
@@ -48,6 +48,7 @@
   "dependencies": {
     "browser-cookies": "^1.2.0",
     "folktale": "^2.1.0",
-    "ramda": "^0.25.0"
+    "ramda": "^0.25.0",
+    "tld-list": "^1.0.1"
   }
 }

@@ -17,7 +17,8 @@ describe('cookieConsent', function(){
       get: () => this.example,
       set: (k, v) => this.example = v,
     };
-    this.consent = consent(cookies)(mappings);
+    const hostname = this.hostname = 'he.dev.localhost.com';
+    this.consent = consent(cookies, hostname)(mappings);
   });
 
   it('can be instantiated with no mappings', function () {
