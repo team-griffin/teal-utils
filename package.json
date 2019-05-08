@@ -1,6 +1,6 @@
 {
   "name": "@team-griffin/uteals",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Utilities for Tealium",
   "main": "dist/cjs/uteals.js",
   "module": "dist/es/uteals.js",
@@ -8,9 +8,9 @@
   "author": "Jack Ellis <jack.ellis@godaddy.com>",
   "license": "MIT",
   "scripts": {
-    "prepublish": "npm run build",
+    "prepublishOnly": "yarn build",
     "transpile": "babel src -d lib --copy-files",
-    "lint": "npm run lint:js && npm run flow",
+    "lint": "yarn lint:js && yarn flow",
     "lint:js": "eslint -c ./config/.eslintrc.js 'src/**/*.js'",
     "lint:js:fix": "eslint --fix -c ./config/.eslintrc.js 'src/**/*.js'",
     "flow": "flow check; test $? -eq 0 -o $? -eq 2",

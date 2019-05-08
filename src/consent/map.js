@@ -20,8 +20,13 @@ export const idsToAliases = curry2((
   r.keys,
   r.map((id) => {
     const alias = mappings[id];
-    return { [alias]: ids[id] };
+    const value = ids[id];
+    if (alias == null) {
+      return;
+    }
+    return { [alias]: value };
   }),
+  r.filter(Boolean),
   r.mergeAll,
 )(ids));
 
