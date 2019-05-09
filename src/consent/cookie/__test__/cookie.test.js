@@ -19,8 +19,17 @@ describe('cookieConsent', function(){
         this.example = v;
       }),
     };
-    const hostname = this.hostname = 'he.dev.localhost.com';
-    this.consent = consent(cookies, hostname)(mappings);
+    const window = this.window = {
+      utag: {
+        cfg: {
+          domain: 'dev.localhost.com',
+        },
+      },
+      location: {
+        hostname: 'he.dev.localhost.com',
+      },
+    };
+    this.consent = consent(cookies, window)(mappings);
   });
 
   it('can be instantiated with no mappings', function () {
@@ -126,19 +135,7 @@ describe('cookieConsent', function(){
       });
       
       expect(this.cookies.set.called).to.be.true;
-      expect(this.cookies.set.lastCall.args[2].domain).to.equal('localhost.com');
-    });
-    it('handles non-tld hosts', function() {
-      const hostname = 'he.dev.localhost';
-      this.consent = consent(this.cookies, hostname)(this.mappings);
-      this.consent.set({
-        default: true,
-        advertising: true,
-        analytics: true,
-      });
-      
-      expect(this.cookies.set.called).to.be.true;
-      expect(this.cookies.set.lastCall.args[2].domain).to.equal('localhost');
+      expect(this.cookies.set.lastCall.args[2].domain).to.equal('dev.localhost.com');
     });
   });
 

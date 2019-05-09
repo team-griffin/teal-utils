@@ -40,7 +40,7 @@ type CookieConsent = (
 
 const cookieConsent = (
   cookies: Cookies,
-  hostname: string,
+  window: Object,
 ): CookieConsent => (
   mappings = {},
   cookieOptions,
@@ -49,7 +49,7 @@ const cookieConsent = (
 
   const getFromCookie = () => Maybe.fromNullable(cookies.get(CONSENT_COOKIE));
   const writeToCookie = (value) => {
-    const domain = getDomain(hostname);
+    const domain = getDomain(window);
     const opts = Object.assign(
       { domain },
       cookieOptions,

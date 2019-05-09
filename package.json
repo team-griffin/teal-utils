@@ -49,7 +49,6 @@
   "dependencies": {
     "browser-cookies": "^1.2.0",
     "folktale": "^2.1.0",
-    "ramda": "^0.26.1",
-    "tld-list": "^1.0.1"
+    "ramda": "^0.26.1"
   }
 }
