@@ -12,7 +12,7 @@ describe('cookieConsent', function(){
       c9: 'analytics',
       c11: 'support',
     };
-    this.example = '0:1|c:0|c9:1|c11:0';
+    this.example = '0:1|c:0|c9:1|c11:0|c1:0';
     const cookies = this.cookies = {
       get: () => this.example,
       set: (k, v) => this.example = v,
@@ -121,36 +121,52 @@ describe('cookieConsent', function(){
   describe('getByOrder', function(){
     it('returns a Maybe', function () {
       const { consent } = this;
-      const result = consent.getByOrder([ 'default' ]);
+      const result = consent.getByOrder([ 'consent' ]);
 
       expect(Maybe.hasInstance(result)).to.be.true;
     });
     it('returns an object', function () {
       const { consent } = this;
-      const result = consent.getByOrder([ 'default' ]).getOrElse();
+      const result = consent.getByOrder([ 'consent' ]).getOrElse();
       expect(result).to.be.instanceof(Object);
     });
     it('contains the provided keys', function () {
       const { consent } = this;
-      const result = consent.getByOrder([ 'default', 'analytics' ]).getOrElse();
-      expect(result.default).to.be.instanceof(Object);
+      const result = consent.getByOrder([ 'consent', 'analytics' ]).getOrElse();
+      expect(result.consent).to.be.instanceof(Object);
       expect(result.analytics).to.be.instanceof(Object);
     });
     it('contains the id and value for each category', function () {
       const { consent } = this;
 
-      const result = consent.getByOrder([ 'default', 'advertising', 'analytics' ]).getOrElse();
+      const result = consent.getByOrder([ 'consent', 'advertising', 'analytics' ]).getOrElse();
 
-      expect(result.default.id).to.equal('0');
-      expect(result.default.value).to.equal(false);
+      expect(result.consent.id).to.equal('0');
+      expect(result.consent.value).to.equal(false);
       expect(result.advertising.id).to.equal('c');
       expect(result.advertising.value).to.equal(true);
       expect(result.analytics.id).to.equal('c9');
       expect(result.analytics.value).to.equal(false);
     });
+    it('inserts a default key', function() {
+      const { consent } = this;
+
+      const result = consent.getByOrder([ 'consent', 'support', 'analytics', 'advertising' ]).getOrElse();
+
+      expect(result.default.id).to.equal('c1');
+      expect(result.default.value).to.equal(true);
+    });
+    it('does not insert default key if already exists', function() {
+      const { consent } = this;
+
+      const result = consent.getByOrder([ 'consent', 'support', 'analytics', 'default', 'advertising' ]).getOrElse();
+
+      expect(result.default.id).to.equal('c11');
+      expect(result.default.value).to.equal(true);
+    });
     it('returns void for unknown/missing categories', function () {
       const { consent } = this;
-      const result = consent.getByOrder([ 'default', 'support', 'analytics', 'advertising', 'extra' ]).getOrElse();
+      const result = consent.getByOrder([ 'consent', 'support', 'analytics', 'advertising', 'extra' ]).getOrElse();
 
       expect(result.extra).to.equal(void 0);
     });
