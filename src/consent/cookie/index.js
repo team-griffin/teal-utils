@@ -1,12 +1,12 @@
 // @flow
 import typeof Cookies from 'browser-cookies';
 
-import tlds from 'tld-list';
 import Maybe from 'folktale/maybe';
 import * as r from 'ramda';
 
 import consent from '../consent';
 import { CONSENT_COOKIE } from '../../constants';
+import { getDomain } from './utils';
 import {
   monadMap,
   monadTap,
@@ -36,22 +36,6 @@ type CookieConsent = (
       value: boolean,
     },
   }>,
-};
-
-const getDomain = (hostname: string) => {
-  const tld = r.pipe(
-    r.map((tld) => `.${tld}`),
-    r.find(r.contains(r.__, hostname)),
-  )(tlds);
-
-  const i = r.indexOf(tld, hostname);
-
-  return r.pipe(
-    r.slice(0, i),
-    r.split('.'),
-    r.last,
-    (url) => `${url}${tld}`,
-  )(hostname);
 };
 
 const cookieConsent = (

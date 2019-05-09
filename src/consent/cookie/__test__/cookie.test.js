@@ -15,7 +15,9 @@ describe('cookieConsent', function(){
     this.example = '0:1|c:0|c9:1|c11:0|c1:0';
     const cookies = this.cookies = {
       get: () => this.example,
-      set: (k, v) => this.example = v,
+      set: sinon.stub().callsFake((k, v) => {
+        this.example = v;
+      }),
     };
     const hostname = this.hostname = 'he.dev.localhost.com';
     this.consent = consent(cookies, hostname)(mappings);
@@ -115,6 +117,28 @@ describe('cookieConsent', function(){
       const actual = this.example;
 
       expect(actual).to.equal(expected);
+    });
+    it('sets the domain name', function() {
+      this.consent.set({
+        default: true,
+        advertising: true,
+        analytics: true,
+      });
+      
+      expect(this.cookies.set.called).to.be.true;
+      expect(this.cookies.set.lastCall.args[2].domain).to.equal('localhost.com');
+    });
+    it('handles non-tld hosts', function() {
+      const hostname = 'he.dev.localhost';
+      this.consent = consent(this.cookies, hostname)(this.mappings);
+      this.consent.set({
+        default: true,
+        advertising: true,
+        analytics: true,
+      });
+      
+      expect(this.cookies.set.called).to.be.true;
+      expect(this.cookies.set.lastCall.args[2].domain).to.equal('localhost');
     });
   });
 
