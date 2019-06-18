@@ -1,6 +1,6 @@
 {
   "name": "@team-griffin/uteals",
-  "version": "1.2.3",
+  "version": "2.0.0",
   "description": "Utilities for Tealium",
   "main": "dist/cjs/uteals.js",
   "module": "dist/es/uteals.js",
@@ -35,7 +35,7 @@
     "cross-env": "^5.0.1",
     "eslint": "^4.13.0",
     "eslint-plugin-flowtype": "^2.30.4",
-    "flow-bin": "^0.72.0",
+    "flow-bin": "0.75.x",
     "mocha": "^4.0.1",
     "nyc": "^11.0.2",
     "rollup": "^0.54.0",
@@ -48,7 +48,6 @@
   },
   "dependencies": {
     "browser-cookies": "^1.2.0",
-    "folktale": "^2.1.0",
     "ramda": "^0.26.1"
   }
 }

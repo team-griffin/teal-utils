@@ -106,9 +106,9 @@ This means you can reference the preferences by their aliases rather than their 
 ```js
 (
   categories?: Array<string>,
-) => Maybe<{
+) => {
   [id: string]: boolean,
-}>
+}
 ```
 Fetches the categories, with a boolean value to indicate whether the user has given consent for that option.
 ```js
@@ -126,7 +126,7 @@ o.get().getOrElse() // -> { default: true, analytics: false }
   categories: {
     [id: string]: boolean,
   },
-) => Maybe<string>;
+) => string;
 ```
 Sets the consent flag for the given categories. Any categories not passed into this method will be preserved.
 
@@ -140,12 +140,12 @@ o.set({
 ```js
 (
   categories: Array<string>,
-) => Maybe<{
+) => {
   [category: string]: {
     id: string,
     value: boolean,
   },
-}>
+}
 ```
 If you don't know the ids of your categories, but you know the order they will be in, you can use this method to extract the ids and flags based purely on their order.
 

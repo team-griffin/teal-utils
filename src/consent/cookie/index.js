@@ -1,16 +1,11 @@
 // @flow
 import typeof Cookies from 'browser-cookies';
 
-import Maybe from 'folktale/maybe';
 import * as r from 'ramda';
 
 import consent from '../consent';
 import { CONSENT_COOKIE } from '../../constants';
 import { getDomain } from './utils';
-import {
-  monadMap,
-  monadTap,
-} from '../../utils';
 
 type Categories = {
   [category: string]: boolean,
@@ -24,18 +19,18 @@ type CookieConsent = (
 ) => {
   get: (
     categories?: Array<string>,
-  ) => Maybe<Categories>,
+  ) => Categories,
   set: (
     categories: Categories,
-  ) => Maybe<string>,
+  ) => string,
   getByOrder: (
     categories: Array<string>,
-  ) => Maybe<{
+  ) => {
     [key: string]: {
       id: string,
       value: boolean,
     },
-  }>,
+  },
 };
 
 const cookieConsent = (
@@ -47,7 +42,7 @@ const cookieConsent = (
 ) => {
   const o = consent(mappings);
 
-  const getFromCookie = () => Maybe.fromNullable(cookies.get(CONSENT_COOKIE));
+  const getFromCookie = () => cookies.get(CONSENT_COOKIE);
   const writeToCookie = (value) => {
     const domain = getDomain(window);
     const opts = Object.assign(
@@ -59,16 +54,16 @@ const cookieConsent = (
 
   const get = (categories) => r.pipe(
     getFromCookie,
-    monadMap((consent) => o.get(categories, consent)),
+    (consent) => o.get(categories, consent),
   )(null);
   const set = (categories) => r.pipe(
     getFromCookie,
-    monadMap((consent) => o.set(categories, consent)),
-    monadTap(writeToCookie),
+    (consent) => o.set(categories, consent),
+    r.tap(writeToCookie),
   )(null);
   const getByOrder = (categories) => r.pipe(
     getFromCookie,
-    monadMap((consent) => o.getByOrder(categories, consent)),
+    (consent) => o.getByOrder(categories, consent),
   )(null);
 
   return {
