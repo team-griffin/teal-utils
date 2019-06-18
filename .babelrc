@@ -17,7 +17,6 @@
         ],
         "flow"
       ],
-      "plugins": [ "ramda" ]
     },
 
     "production": {
@@ -37,7 +36,6 @@
         ],
         "flow"
       ],
-      "plugins": [ "ramda" ]
     },
 
     "test": {
@@ -54,7 +52,6 @@
         ],
         "flow"
       ],
-      "plugins": [ "ramda" ]
     }
   }
 }
