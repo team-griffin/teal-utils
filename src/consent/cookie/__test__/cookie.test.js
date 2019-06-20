@@ -7,15 +7,15 @@ describe('cookieConsent', function(){
   beforeEach(function(){
     const mappings = this.mappings = {
       0: 'default',
-      c: 'advertising',
-      c9: 'analytics',
-      c11: 'support',
+      c3: 'advertising',
+      c2: 'analytics',
+      c4: 'support',
     };
-    this.example = '0:1|c:0|c9:1|c11:0|c1:0';
     const cookies = this.cookies = {
-      get: () => this.example,
+      example: '0:1|c1:0|c2:1|c3:0|c4:0',
+      get: () => cookies.example,
       set: sinon.stub().callsFake((k, v) => {
-        this.example = v;
+        cookies.example = v;
       }),
     };
     const window = this.window = {
@@ -86,7 +86,7 @@ describe('cookieConsent', function(){
 
   describe('set', function(){
     it('stores the new values', function () {
-      const expected = '0:0|c:0|c9:0|c11:1';
+      const expected = '0:0|c2:0|c3:0|c4:1';
 
       this.consent.set({
         default: true,
@@ -94,29 +94,29 @@ describe('cookieConsent', function(){
         analytics: true,
       });
 
-      const actual = this.example;
+      const actual = this.cookies.example;
 
       expect(actual).to.equal(expected);
     });
     it('preserves existing values', function () {
-      const expected = '0:1|c:0|c9:1|c11:1';
+      const expected = '0:1|c2:1|c3:0|c4:1';
 
       this.consent.set({
         advertising: true,
       });
 
-      const actual = this.example;
+      const actual = this.cookies.example;
 
       expect(actual).to.equal(expected);
     });
     it('ignores invalid categories', async function () {
-      const expected = '0:1|c:1|c9:1|c11:1';
+      const expected = '0:1|c2:1|c3:1|c4:1';
 
       this.consent.set({
         extra: true,
       });
 
-      const actual = this.example;
+      const actual = this.cookies.example;
 
       expect(actual).to.equal(expected);
     });
@@ -151,10 +151,10 @@ describe('cookieConsent', function(){
 
       expect(result.consent.id).to.equal('0');
       expect(result.consent.value).to.equal(false);
-      expect(result.advertising.id).to.equal('c');
-      expect(result.advertising.value).to.equal(true);
-      expect(result.analytics.id).to.equal('c9');
-      expect(result.analytics.value).to.equal(false);
+      expect(result.advertising.id).to.equal('c2');
+      expect(result.advertising.value).to.equal(false);
+      expect(result.analytics.id).to.equal('c3');
+      expect(result.analytics.value).to.equal(true);
     });
     it('inserts a default key', function() {
       const { consent } = this;
@@ -169,7 +169,7 @@ describe('cookieConsent', function(){
 
       const result = consent.getByOrder([ 'consent', 'support', 'analytics', 'default', 'advertising' ]);
 
-      expect(result.default.id).to.equal('c11');
+      expect(result.default.id).to.equal('c3');
       expect(result.default.value).to.equal(true);
     });
     it('returns void for unknown/missing categories', function () {
@@ -177,6 +177,16 @@ describe('cookieConsent', function(){
       const result = consent.getByOrder([ 'consent', 'support', 'analytics', 'advertising', 'extra' ]);
 
       expect(result.extra).to.equal(void 0);
+    });
+    it('gets the order from the consent numbers', function() {
+      const { consent } = this;
+      this.cookies.example = '0:1|c4:0|c2:0|c3:1|c1:0';
+      const result = consent.getByOrder([ 'consent', 'support', 'analytics', 'advertising' ]);
+      
+      expect(result.consent.value).to.equal(false);
+      expect(result.support.value).to.equal(true);
+      expect(result.analytics.value).to.equal(false);
+      expect(result.advertising.value).to.equal(true);
     });
   });
 });

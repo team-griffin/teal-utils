@@ -17,9 +17,16 @@ const parse = (
     r.defaultTo({}),
   );
 
+  const getCategoryIndex = r.pipe(
+    r.propOr('', 'id'),
+    r.replace(/[a-zA-Z]/g, ''),
+    Number,
+  );
+
   const parseConsent = r.pipe(
     r.split('|'),
     r.map(parseCategory),
+    r.sortBy(getCategoryIndex),
   );
 
   return parseConsent(consent);

@@ -1,6 +1,6 @@
 {
   "name": "@team-griffin/uteals",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Utilities for Tealium",
   "main": "dist/cjs/uteals.js",
   "module": "dist/es/uteals.js",
