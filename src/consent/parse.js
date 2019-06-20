@@ -24,6 +24,7 @@ const parse = (
   );
 
   const parseConsent = r.pipe(
+    r.defaultTo(''),
     r.split('|'),
     r.map(parseCategory),
     r.sortBy(getCategoryIndex),
