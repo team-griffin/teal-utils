@@ -1,44 +1,34 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
-import { identity } from 'ramda';
+import Identity from '../identity';
 
-import consent from '../';
-
-describe('consent', function(){
-  beforeEach(function(){
-    const mappings = this.mappings = {
+describe('consent', () => {
+  const setup = () => {
+    const mappings = {
       0: 'default',
       c: 'advertising',
       c9: 'analytics',
       c11: 'support',
     };
-    const example = this.example = '0:1|c:0|c9:1|c11:0';
-    this.consent = consent(mappings, example);
-  });
+    const example = '0:1|c:0|c9:1|c11:0';
+    const identity = new Identity(mappings, example);
 
-  it('can be instantiated with no mappings', function () {
+    return {
+      mappings,
+      example,
+      identity,
+      consent: identity,
+    };
+  };
+
+  it('can be instantiated with no mappings', () => {
     expect(() => {
-      consent();
+      new Identity();
     }).not.to.throw;
   });
-  it('has a get method', function(){
-    expect(typeof this.consent.get).to.equal('function');
-  });
-  it('has a set method', function () {
-    expect(typeof this.consent.set).to.equal('function');
-  });
-  it('has a getByOrder method', function () {
-    expect(typeof this.consent.getByOrder).to.equal('function');
-  });
-
-  describe('get', function(){
-    it('returns an object', function () {
-      const { consent } = this;
-      const result = consent.get([ 'default' ]);
-      expect(result).to.be.instanceof(Object);
-    });
-    it('returns the id and value for each category', function () {
-      const { consent } = this;
+  
+  describe('get', () => {
+    it('returns the id and value for each category', () => {
+      const { consent } = setup();
 
       const result = consent.get([ 'default', 'advertising', 'analytics' ]);
 
@@ -46,20 +36,20 @@ describe('consent', function(){
       expect(result['advertising']).to.equal(true);
       expect(result['analytics']).to.equal(false);
     });
-    it('returns void for unknown/missing categories', function () {
-      const { consent } = this;
+    it('returns void for unknown/missing categories', () => {
+      const { consent } = setup();
       const result = consent.get([ 'default', 'support', 'extra' ]);
 
       expect(result.extra).to.equal(void 0);
     });
-    it('omits non-requested categories', function () {
-      const { consent } = this;
+    it('omits non-requetsed categories', () => {
+      const { consent } = setup();
       const result = consent.get([ 'advertising' ]);
 
       expect(Object.keys(result)).to.deep.equal([ 'advertising' ]);
     });
-    it('returns all categories', function () {
-      const { consent } = this;
+    it('returns all categories', () => {
+      const { consent } = setup();
       const result = consent.get(void 0);
 
       expect(result['default']).to.equal(false);
@@ -69,11 +59,12 @@ describe('consent', function(){
     });
   });
 
-  describe('set', function(){
-    it('stores the new values', function () {
+  describe('set', () => {
+    it('stores the new values', () => {
+      const { consent } = setup();
       const expected = '0:0|c:0|c9:0|c11:1';
 
-      const actual = this.consent.set({
+      const actual = consent.set({
         default: true,
         advertising: true,
         analytics: true,
@@ -81,19 +72,21 @@ describe('consent', function(){
 
       expect(actual).to.equal(expected);
     });
-    it('preserves existing values', function () {
+    it('preserves existing values', () => {
+      const { consent } = setup();
       const expected = '0:1|c:0|c9:1|c11:1';
 
-      const actual = this.consent.set({
+      const actual = consent.set({
         advertising: true,
       });
 
       expect(actual).to.equal(expected);
     });
-    it('ignores invalid categories', async function () {
+    it('ignores invalid categories', () => {
+      const { consent } = setup();
       const expected = '0:1|c:1|c9:1|c11:1';
 
-      const actual = this.consent.set({
+      const actual = consent.set({
         extra: true,
       });
 
@@ -101,20 +94,15 @@ describe('consent', function(){
     });
   });
 
-  describe('getByOrder', function(){
-    it('returns an object', function () {
-      const { consent } = this;
-      const result = consent.getByOrder([ 'default' ]);
-      expect(result).to.be.instanceof(Object);
-    });
-    it('contains the provided keys', function () {
-      const { consent } = this;
+  describe('getByOrder', () => {
+    it('contains the provided keys', () => {
+      const { consent } = setup();
       const result = consent.getByOrder([ 'default', 'analytics' ]);
       expect(result.default).to.be.instanceof(Object);
       expect(result.analytics).to.be.instanceof(Object);
     });
-    it('contains the id and value for each category', function () {
-      const { consent } = this;
+    it('contains the id and value for each category', () => {
+      const { consent } = setup();
 
       const result = consent.getByOrder([ 'default', 'advertising', 'analytics' ]);
 
@@ -125,12 +113,11 @@ describe('consent', function(){
       expect(result.analytics.id).to.equal('c9');
       expect(result.analytics.value).to.equal(false);
     });
-    it('returns void for unknown/missing categories', function () {
-      const { consent } = this;
+    it('returns void for unknown/missing categories', () => {
+      const { consent } = setup();
       const result = consent.getByOrder([ 'default', 'support', 'analytics', 'advertising', 'extra' ]);
 
       expect(result.extra).to.equal(void 0);
     });
-  });
-
-});
+  })
+})

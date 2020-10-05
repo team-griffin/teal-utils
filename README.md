@@ -9,13 +9,13 @@
 ) => Object
 ```
 ```js
-import { consent } from '@team-griffin/uteals';
+import { Consent } from '@team-griffin/uteals';
 ```
 The consent module allows you to fetch and update the opt out preferences.
 
 To create an optOut instance, call it with a mapping of category ids to aliases:
 ```js
-const o = consent({
+const o = new Consent({
   0: 'default',
   c11: 'analytics',
 });
@@ -89,13 +89,13 @@ o.getByOrder([ 'default', 'analytics' ], '0:1|c:0') // { default: { id: '0', val
 ) => Object
 ```
 ```js
-import { cookieConsent } from '@team-griffin/uteals';
+import { CookieConsent } from '@team-griffin/uteals';
 ```
 This variation fetches the consent data from a cookie rather than being passed in explicitly.
 
 To create an instance, call it with a mapping of category ids to aliases:
 ```js
-const o = cookieConsent({
+const o = new CookieConsent({
   0: 'default',
   c11: 'analytics',
 });
@@ -165,13 +165,13 @@ o.getByOrder([ 'default', 'analytics' ]).getOrElse() // { default: { id: '0', va
 ) => Object
 ```
 ```js
-import { identityConsent } from '@team-griffin/uteals';
+import { IdentityConsent } from '@team-griffin/uteals';
 ```
 This variation is very similar to the standard `consent` except that you can provide the consent string at instantiation time.
 
 To create an instance, call it with a mapping of category ids to aliases:
 ```js
-const o = identityConsent({
+const o = new IdentityConsent({
   0: 'default',
   c11: 'analytics',
 }, '0:1|c:0');
