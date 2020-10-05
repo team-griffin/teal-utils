@@ -3,23 +3,27 @@ module.exports = {
     'browser': true,
     'es6': true,
   },
+  'parser': '@typescript-eslint/parser',
   'parserOptions': {
     'ecmaFeatures': {
       'experimentalObjectRestSpread': true,
-      'jsx': true,
     },
     'sourceType': 'module',
   },
+  'plugins': [
+    '@typescript-eslint',
+  ],
   'extends': [
     '@team-griffin/eslint-config/frontend-config/core',
-    '@team-griffin/eslint-config/frontend-config/flowtype',
-    // '@team-griffin/eslint-config/frontend-config/import',
     '@team-griffin/eslint-config/frontend-config/jsx-a11y',
-    '@team-griffin/eslint-config/frontend-config/react',
   ],
   'settings': {
     'import/ignore': [
       'svg\'$',
     ],
-  }
+  },
+  'rules': {
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'error',
+  },
 };

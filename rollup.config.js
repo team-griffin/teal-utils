@@ -1,8 +1,8 @@
 import babel from 'rollup-plugin-babel';
-import localResolve from 'rollup-plugin-local-resolve';
+import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  input: 'src/index.js',
+  input: 'src/index.ts',
   output: [
     {
       file: 'dist/es/uteals.js',
@@ -14,14 +14,18 @@ export default {
     },
   ],
   plugins: [
-    localResolve(),
+    resolve({
+      extensions: [ '.js', '.ts' ],
+    }),
     babel({
       exclude: 'node_modules/**',
-      plugins: ['external-helpers'],
+      extensions: [ '.js', '.ts' ],
     }),
   ],
   external: [
     'browser-cookies',
-    'ramda',
+    '@team-griffin/capra/map-entries',
+    '@team-griffin/capra/invert-obj',
+    '@team-griffin/capra/map-obj',
   ],
 };

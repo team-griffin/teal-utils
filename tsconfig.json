@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "allowJs": false,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "alwaysStrict": true,
+    "jsx": "react",
+    "declaration": true,
+    "esModuleInterop": true,
+    "types": [ "node", "mocha" ]
+  },
+  "exclude": [
+    "**/__tests__/*"
+  ]
+}
